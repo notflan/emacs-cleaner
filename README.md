@@ -30,8 +30,10 @@ To build and install:
 ``` shell
 $ make && sudo make install
 ```
-The default install path is `/usr/local/bin`, change `INSTALL_DIR` in `Makefile` to specify location.
+The default install path is `/usr/local/bin`, change `INSTALL_DIR` in [Makefile] to specify location.
 
+ [Makefile]: ./blob/master/Makefile
+ 
 To uninstall:
 ``` shell
 $ sudo make uninstall
