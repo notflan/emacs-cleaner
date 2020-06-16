@@ -32,7 +32,7 @@ $ make && sudo make install
 ```
 The default install path is `/usr/local/bin`, change `INSTALL_DIR` in [Makefile] to specify location.
 
- [Makefile]: ./blob/master/Makefile
+ [Makefile]: ./Makefile
  
 To uninstall:
 ``` shell
