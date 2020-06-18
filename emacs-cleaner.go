@@ -52,7 +52,7 @@ func main() {
 	dirs := flag.Args()
 	if *help || len(dirs)<1 {
 		fmt.Printf("Emacs Cleaner version %v\nDelete emacs filesystem clutter\n\n", VERSION)
-		fmt.Println("$ emacs-cleaner [--threads <threads> [--dry] <dirs...>")
+		fmt.Println("$ emacs-cleaner [--threads <threads>] [--dry] <dirs...>")
 		fmt.Println("$ emacs-cleaner [--help]\n")
 
 		flag.PrintDefaults()
