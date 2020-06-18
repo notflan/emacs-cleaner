@@ -39,5 +39,5 @@ To uninstall:
 $ sudo make uninstall
 ```
 
-## Liscense
+## License
 GPL'd with love <3
