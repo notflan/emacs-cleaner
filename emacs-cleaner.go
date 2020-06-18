@@ -13,7 +13,7 @@ import (
 	"regexp"
 )
 
-const VERSION string = "0.1.0"
+const VERSION string = "0.1.1"
 
 func walk(rpath string, lock *semaphore.Semaphore, output chan string, wait *sync.WaitGroup) error {
 	defer wait.Done()
@@ -72,6 +72,7 @@ func main() {
 	operate := make(chan string, 0)
 	var wait sync.WaitGroup
 	var used uint64 = 0
+	ok := make(chan bool, 1)
 	
 	go func() {
 		for file := range operate {
@@ -86,6 +87,7 @@ func main() {
 			}
 			
 		}
+		ok <- true
 	}()
 
 	for _, dir := range dirs {
@@ -101,9 +103,9 @@ func main() {
 	wait.Wait()
 
 	close(operate)
-
+	<- ok
 	fmt.Printf("deleted %v emacs temporary files\n", used)
 
 	lock.Close()
-	
+
 }

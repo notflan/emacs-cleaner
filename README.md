@@ -1,4 +1,4 @@
-# Emacs Cleaner `0.1.0`
+# Emacs Cleaner `0.1.1`
 
 Remove emacs temporary files
 
