@@ -10,6 +10,7 @@ import (
 	"sync"
 	"sync/atomic"
 	"path"
+	"path/filepath"
 	"regexp"
 )
 
@@ -38,14 +39,51 @@ func walk(rpath string, lock *semaphore.Semaphore, output chan string, wait *syn
 	return nil
 }
 
-var work_re *regexp.Regexp = regexp.MustCompile("~$")
-func work_on(file string) bool {
-	return work_re.MatchString(file)
+var work_re *regexp.Regexp = regexp.MustCompile(`~$`)
+var as_re   *regexp.Regexp = regexp.MustCompile(`^\.#(.*)$`)
+var as_re2  *regexp.Regexp = regexp.MustCompile(`^#(.*)#$`)
+
+func file_exists(file string) bool {
+	if s, err:= os.Stat(file); err == nil {
+		return !s.IsDir()
+	}
+	return false
+}
+
+func autosave_del(file string, check_extra bool) bool {
+	if as_re.MatchString(file) {
+		if check_extra {
+			group := as_re.FindStringSubmatch(file)
+			if len(group[1]) > 0 {
+				b := file_exists(path.Join(filepath.Dir(file), group[1]))
+				if !b {
+					fmt.Printf("[i] ignoring %s", file)
+				}
+				return b
+			}
+		}
+		return true
+	} else if as_re2.MatchString(file) {
+		if check_extra {
+			group := as_re2.FindStringSubmatch(file)
+			if len(group[1]) > 0 {
+				b := file_exists(path.Join(filepath.Dir(file), group[1]))
+				if !b {
+					fmt.Printf("[i] ignoring %s", file)
+				}
+				return b
+			}
+		}
+		return true
+	} 
+	return false
 }
 
 func main() {
 	dry := flag.Bool("dry", false, "Dry run")
 	threads := flag.Int("threads", 10, "Number of threads to use")
+	autosave := flag.Bool("keep-autosave", false, "Keep autosave ('.#*' & '#*#').")
+	forceful := flag.Bool("force", false, "Remove autosave even with no owner file found.")
 	help := flag.Bool("help", false, "Print this message")
 	flag.Parse()
 
@@ -57,6 +95,10 @@ func main() {
 
 		flag.PrintDefaults()
 		return
+	}
+	
+	work_on := func(file string) bool {
+		return work_re.MatchString(file) || (!*autosave && autosave_del(file, !*forceful))
 	}
 
 
