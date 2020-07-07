@@ -40,8 +40,8 @@ func walk(rpath string, lock *semaphore.Semaphore, output chan string, wait *syn
 }
 
 var work_re *regexp.Regexp = regexp.MustCompile(`~$`)
-var as_re   *regexp.Regexp = regexp.MustCompile(`^\.#(.*)$`)
-var as_re2  *regexp.Regexp = regexp.MustCompile(`^#(.*)#$`)
+var as_re   *regexp.Regexp = regexp.MustCompile(`(^|/)\.#(.*)$`)
+var as_re2  *regexp.Regexp = regexp.MustCompile(`(^|/)#(.*)#$`)
 
 func file_exists(file string) bool {
 	if s, err:= os.Stat(file); err == nil {
